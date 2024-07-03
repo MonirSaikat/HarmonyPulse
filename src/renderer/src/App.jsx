@@ -1,22 +1,26 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
-import { HashRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
+import { HashRouter, Link, Route, Routes } from 'react-router-dom'
+import { HomeScreen } from './screens/app/homeScreen'
+import { LoginScreen } from './screens/auth/loginScreen'
+import { RegisterScreen } from './screens/auth/registerScreen'
+import { VideoDetails } from './screens/app/videoDetails'
+import './App.css';
 
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
 
   return (
-    <HashRouter>
+    <>
       <Link to="/">Home</Link>
-      <Link to="/about">About</Link>
-      <Link to="/contact">Contact</Link>
+      <Link to="/login">Login</Link>
+      <Link to="/register">Register</Link>
 
       <Routes>
-        <Route path="/" element={<h1>Home page</h1>} index />
-        <Route path="/about" element={<h1>About page</h1>} />
-        <Route path="/contact" element={<h1>Contact page</h1>} />
+        <Route path="/" element={<HomeScreen />} index />
+        <Route path="/:videoId" element={<VideoDetails />} />
+        <Route path="/login" element={<LoginScreen />} />
+        <Route path="/register" element={<RegisterScreen />} />
       </Routes>
-    </HashRouter>
+    </>
   )
 }
 
