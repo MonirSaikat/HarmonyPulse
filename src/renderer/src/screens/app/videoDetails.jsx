@@ -8,6 +8,8 @@ export const VideoDetails = () => {
     <div>
       <ReactPlayer
         url={`https://www.youtube.com/watch?v=${params.videoId}`}
+        width={'100vw'}
+        height={'calc(100vh - var(--navbar-height) * 1.599)'}
         loop
         playing
         config={{

@@ -20,7 +20,7 @@ export const LoginScreen = () => {
       })
 
       if (error) {
-        throw error // If there's an error, it will be caught by the catch block
+        throw error  
       }
 
       console.log(data.user)
@@ -39,6 +39,7 @@ export const LoginScreen = () => {
 
   return (
     <form onSubmit={handleLogin}>
+      <h2>Login</h2>
       <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
       <button type="submit">Login</button>
