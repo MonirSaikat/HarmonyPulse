@@ -1,6 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
+
+const Input = styled.input`
+  padding: 10px;
+  border: 2px solid skyblue;
+  outline: 0;
+`
+
+const Button = styled.button`
+  padding: 10px;
+  outline: 0;
+  border: 0;
+  cursor: pointer;
+`
 
 export const LoginScreen = () => {
   const { user, loginUser } = useAuth()
@@ -15,7 +29,7 @@ export const LoginScreen = () => {
       loginUser({
         email,
         password
-      }).then((ok) => {})
+      })
     } catch (error) {
       alert('Something went wrong: ' + error.message)
     }
@@ -30,9 +44,19 @@ export const LoginScreen = () => {
   return (
     <form onSubmit={_handleLogin}>
       <h2>Login</h2>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button type="submit">Login</button>
+      <Input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+      />
+      <Input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+      />
+      <Button type="submit">Login</Button>
     </form>
   )
 }
