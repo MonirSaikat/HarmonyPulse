@@ -23,6 +23,7 @@
     "@supabase/supabase-js": "^2.44.2",
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
+    "moment": "^2.30.1",
     "react-player": "^2.16.0",
     "react-router-dom": "^6.24.1",
     "styled-components": "^6.1.11"

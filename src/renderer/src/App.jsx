@@ -6,16 +6,17 @@ import { VideoDetails } from './screens/app/videoDetails'
 import './App.css'
 import { Navbar } from './components/Navbar'
 import styled from 'styled-components'
+import { AuthProvider } from './context/AuthContext'
 
 const AppContentContainer = styled.div`
   margin-top: calc(var(--navbar-height) * 1.5);
-`;
+`
 
 function App() {
   const ipcHandle = () => window.electron.ipcRenderer.send('ping')
 
   return (
-    <>
+    <AuthProvider>
       <Navbar />
       <AppContentContainer>
         <Routes>
@@ -25,7 +26,7 @@ function App() {
           <Route path="/register" element={<RegisterScreen />} />
         </Routes>
       </AppContentContainer>
-    </>
+    </AuthProvider>
   )
 }
 

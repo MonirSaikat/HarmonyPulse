@@ -1,44 +1,34 @@
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
-const env = await import.meta.env
-
-const supabaseUrl = 'https://tvfrxeajcdlzylsrojrw.supabase.co'
-const supabase = createClient(supabaseUrl, env.VITE_SUPABASE_KEY)
+import { useAuth } from '../../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export const LoginScreen = () => {
+  const { user, loginUser } = useAuth()
   const [email, setEmail] = useState('')
-  const [user, setUser] = useState(null)
   const [password, setPassword] = useState('')
+  const navigate = useNavigate()
 
-  const handleLogin = async (e) => {
+  const _handleLogin = async (e) => {
     e.preventDefault()
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      loginUser({
         email,
         password
-      })
-
-      if (error) {
-        throw error  
-      }
-
-      console.log(data.user)
-      setUser(data.user)
+      }).then((ok) => {})
     } catch (error) {
-      console.log(error.message)
       alert('Something went wrong: ' + error.message)
     }
   }
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user)
-    })
-  }, [])
+    if (user) {
+      navigate('/')
+    }
+  }, [user])
 
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={_handleLogin}>
       <h2>Login</h2>
       <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />

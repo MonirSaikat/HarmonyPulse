@@ -7,17 +7,41 @@ const env = await import.meta.env
 const API_KEY = env.VITE_YOUTUBE_API_KEY
 const BASE_URL = 'https://www.googleapis.com/youtube/v3'
 
-const fetchVideos = async (query = 'derek banas') => {
+const getChannelId = async (channelName) => {
   try {
     const response = await axios.get(`${BASE_URL}/search`, {
       params: {
         part: 'snippet',
-        q: query,
+        q: channelName,
+        type: 'channel',
         key: API_KEY,
-        maxResults: 20,
-        order: 'viewCount' // date | viewCount
+        maxResults: 1
       }
     })
+
+    const channel = response.data.items[0] // Assuming the first result is the correct channel
+    return channel.id.channelId
+  } catch (error) {
+    console.error('Error fetching channel ID:', error)
+    throw error
+  }
+}
+
+const fetchVideos = async (channelName = 'derek banas') => {
+  try {
+    const channelId = await getChannelId(channelName)
+
+    const response = await axios.get(`${BASE_URL}/search`, {
+      params: {
+        part: 'snippet',
+        channelId: channelId,
+        key: API_KEY,
+        // videoDuration: 'medium',
+        maxResults: 32,
+        order: 'date' // date | viewCount
+      }
+    })
+
     return response.data.items
   } catch (error) {
     console.error('Error fetching videos:', error)
@@ -26,10 +50,6 @@ const fetchVideos = async (query = 'derek banas') => {
 }
 
 const HomeScreenStyled = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 12px;
-
   @media (max-width: 768px) {
     grid-template-columns: 1fr 1fr;
   }
@@ -39,19 +59,60 @@ const HomeScreenStyled = styled.div`
   }
 `
 
+const Channels = styled.div`
+  display: flex;
+  justify-content: space-around;
+
+  div {
+    button {
+      min-width: 100%;
+      text-overflow: ellipsis;
+      background: var(--primary-color);
+      color: var(--light-color);
+      padding: 5px;
+    }
+  }
+`
+
+const VideoBoxes = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 12px;
+`
+
 const ImageBox = styled.img`
   width: 100%;
 `
 
 export const HomeScreen = () => {
+  const [channels] = useState([
+    'Traversy Media',
+    'Derek Banas',
+    'FreeCodeCamp',
+    'Web Deve Simplified',
+    'Laravel Daily',
+    'Fireship',
+    'Coding Garden',
+    'codeSTACKr',
+    'The New Boston',
+    'LevelUpTuts',
+    'Fun Fun Function',
+    'Kevin Powell',
+    'Forrest Knight',
+    'Andy Sterkowitz'
+  ])
+
   const [videos, setVideos] = useState([])
   const navigate = useNavigate()
 
-  useEffect(() => {
-    fetchVideos().then((_videos) => {
-      console.log(_videos)
+  const _fetchVideos = (channel) => {
+    fetchVideos(channel).then((_videos) => {
       setVideos(_videos)
     })
+  }
+
+  useEffect(() => {
+    _fetchVideos(channels[0])
   }, [])
 
   const handleImageClick = (videoId) => {
@@ -60,13 +121,23 @@ export const HomeScreen = () => {
 
   return (
     <HomeScreenStyled>
-      {videos.map((v) => (
-        <ImageBox
-          key={v.etag}
-          src={v.snippet.thumbnails.high.url}
-          onClick={() => handleImageClick(v.id.videoId)}
-        />
-      ))}
+      <Channels>
+        {channels.map((ch) => (
+          <div key={ch}>
+            <button onClick={() => _fetchVideos(ch)}>{ch}</button>
+          </div>
+        ))}
+      </Channels>
+
+      <VideoBoxes>
+        {videos.map((v) => (
+          <ImageBox
+            key={v.etag}
+            src={v.snippet.thumbnails.high.url}
+            onClick={() => handleImageClick(v.id.videoId)}
+          />
+        ))}
+      </VideoBoxes>
     </HomeScreenStyled>
   )
 }
