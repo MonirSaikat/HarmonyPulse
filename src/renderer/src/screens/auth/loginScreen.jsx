@@ -1,20 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-
-const Input = styled.input`
-  padding: 10px;
-  border: 2px solid skyblue;
-  outline: 0;
-`
-
-const Button = styled.button`
-  padding: 10px;
-  outline: 0;
-  border: 0;
-  cursor: pointer;
-`
+import { Input } from '../../components/styled/Input'
+import { Button } from '../../components/styled/Button'
 
 export const LoginScreen = () => {
   const { user, loginUser } = useAuth()
